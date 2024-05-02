@@ -1,0 +1,28 @@
+#JSGF V1.0;
+
+grammar commands;
+
+<digit> = one   |
+          two   |
+          three |
+          four  |
+          five  |
+          six   |
+          seven |
+          eight |
+          nine  |
+          ten |
+          eleven |
+          twelve;
+
+
+<command> = /2/ completed | /10/ next  | /20/ previous ;
+
+public <step> =  <command> step;
+
+public <numeric> = go to step <digit>;
+
+
+
+
+

@@ -1,0 +1,980 @@
+{
+  "JuxtopiaTask": {
+    "Version": 1.1,
+    "Name": "Initiate a Direct Line I.V.",
+    "ResourcesPath": "initDirectLineIV/",
+    "Steps": [
+      {
+        "Name": "Gather Prepare and Inspect",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Gather, inspect and prepare equipment",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Spike IV Bag and Prepare IV Tubing",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 3.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+			"Scale": [
+			0.5
+			],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Spike IV Bag and Prepare IV Tubing",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Apply Constricting Band",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "point",
+            "Position": [
+              0,
+              0.0,
+              0.35
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 4.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "1: Put on gloves",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "Text": "2: Choose the most distal and accessible vein of an uninjured arm or hand",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              100,
+              -50,
+              0
+            ]
+          },
+		  {
+            "Text": "3: Avoid sites over joints",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              100,
+              -50,
+              0
+            ]
+          },
+          {
+            "Text": "4: Avoid veins in infected, injured, or irritated areas.",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "Text": "5: Use the nondominant hand or arm, whenever possible",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Cleanse Insertion Site with Alcohol Wipe",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "point",
+            "Position": [
+              0,
+              0,
+              0.18
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 5.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Cleanse site with alcohol wipe",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Hold Skin Taught Distal to Site of Veinipuncture",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "point",
+            "Position": [
+              0,
+              0,
+              0.18
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 6.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Hold skin taut distal to the site of venipuncture with non-dominant hand",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Hold Needle Over Site - 20-30 angle WRT Skin, Bevel Up",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "point",
+            "Position": [
+              0,
+              0,
+              0.18
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 7.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Hold needle at a 20-30 degree angle, bevel up, over top of the venipuncture site.",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Pierce Skin",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "point",
+            "Position": [
+              0,
+              0,
+              0.18
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 8.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Pierce Skin, Advance Catheter UNTIL Blood Appears In Flash Chamber",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Decrease Angle to 10-15 Degrees",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 9-10.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Decrease Angle to 10-15 Degree and Advance 1/8th of and Inch",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Advance the Catheter",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Advance the Catheter Until Hub Touches Skin OR Significant Resistance Felt",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Release the Constricting Band",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Release the Constricting Band with the Non-dominant Hand",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Occlude the Vein",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 12.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Occlude the Vein with the Non-dominant Hand",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Remove Needle",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 13.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Remove the Needle and Place it in a Sharps Container",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Connect IV Tubing",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 14.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Connect IV Tubing, Place Strip of 1IN tape over Hub, and Initiate Flow of Fluids",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Place Strip of 1IN tape over Cover",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 15.png",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Place Strip of 1IN tape over Cover with Transparent Dressing",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Assess IV site for any Signs/Symptoms of Infiltration",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "",
+            "Position": [
+              -80,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Assess Signs/Symptoms",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      },
+      {
+        "Name": "Secure IV Tubing",
+        "Version": 1.1,
+        "Duration": 0,
+        "FeatureAnchoredObjects": [
+          {
+            "Image_Path": "",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [],
+            "MarkerName": "mannequin-intracostalspace"
+          }
+        ],
+        "DisplayAnchoredImage": [
+          {
+            "Image_Path": "IV step 17.png",
+            "Position": [
+              0,
+              0,
+              0
+            ],
+            "AnimationPath": [
+              {
+                "Position": [
+                  0,
+                  0,
+                  0
+                ],
+                "Time": 10
+              }
+            ]
+          }
+        ],
+        "DisplayAnchoredText": [
+          {
+            "Text": "Secure IV Tubing",
+            "Position": [
+              100,
+              -50,
+              0
+            ],
+            "TextSize": 1,
+            "BackgroundColor": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "Wheel": {
+          "Text": "hi there",
+          "Icon": "bla.jpg"
+        }
+      }
+    ]
+  }
+}

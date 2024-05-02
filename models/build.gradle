@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        targetSdkVersion 26
+    }
+
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven { url "https://jitpack.io" }
+
+            flatDir {
+                dirs 'src/main/libs'
+            }
+        }
+    }
+}
+
+ant.importBuild 'assets.xml'
+preBuild.dependsOn(list, checksum)
+clean.dependsOn(clean_assets)
