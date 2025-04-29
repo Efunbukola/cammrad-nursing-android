@@ -18,7 +18,7 @@ android {
     defaultConfig {
         minSdkVersion 22
         targetSdkVersion 32
-        applicationId 'com.Juxtopia.cammrad_nursing'
+        applicationId 'com.Juxtopia.cammrad_nurse'
         ndk {
             abiFilters 'armeabi-v7a'
         }
