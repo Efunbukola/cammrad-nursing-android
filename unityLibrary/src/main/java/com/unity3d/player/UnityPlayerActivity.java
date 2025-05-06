@@ -17,6 +17,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -47,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -187,8 +189,11 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
                 String text = data.get(0);
 
+                if( text.trim().isEmpty()){
+                    return;
+                }
+
                 if(!isDoingRationale && !isListeningForQuestion && text.toLowerCase().contains("have a question")){
-                    isProcessingUserCommand=true;
                     isListeningForQuestion = true;
                     readStep("Ok. I'm listening");
 
@@ -276,7 +281,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                     }
                 }else if(isDoingRationale){
 
-                    if(text.toLowerCase().contains("repeat the question")){
+                    if(text.toLowerCase().contains("repeat") && text.toLowerCase().contains("question")){
                         mUnityPlayer.UnitySendMessage("Rationale Training Controller", "readQuestion", "");
                     }else {
                         mUnityPlayer.UnitySendMessage("Rationale Training Controller", "saveAnswer", text);
@@ -333,8 +338,22 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                 if(status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.ENGLISH);
                 }
+
+                Set<Voice> voices = t1.getVoices();
+
+                if (voices != null) {
+                    // Process the list of voices
+                    for (Voice voice : voices) {
+                        // Print the voice information
+                        Log.d("TTS", "Voice: " + voice.toString());
+                    }
+                } else {
+                    Log.e("TTS", "Error getting voices: Voices is null");
+                }
+
             }
         });
+
 
     }
 
@@ -613,7 +632,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                 speechRecognizer.stopListening();
                 listening=false;
             }
-        },isDoingRationale?12000:8000);
+        },isDoingRationale?30000:12000);
 
     }
 
