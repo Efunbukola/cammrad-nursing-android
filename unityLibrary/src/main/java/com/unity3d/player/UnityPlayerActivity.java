@@ -13,7 +13,6 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
@@ -33,6 +32,15 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.unity3d.cammrad_nurse.R;
 import com.unity3d.player.objects.CameraPreview;
+
+import org.vosk.LibVosk;
+import org.vosk.LogLevel;
+import org.vosk.Model;
+import org.vosk.Recognizer;
+import org.vosk.android.RecognitionListener;
+import org.vosk.android.SpeechService;
+import org.vosk.android.SpeechStreamService;
+import org.vosk.android.StorageService;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -60,8 +68,21 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecycleEvents
+public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecycleEvents, RecognitionListener
 {
+
+    static private final int STATE_START = 0;
+    static private final int STATE_READY = 1;
+    static private final int STATE_DONE = 2;
+    static private final int STATE_FILE = 3;
+    static private final int STATE_MIC = 4;
+
+    /* Used to handle permission request */
+    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+
+    private Model model;
+    private SpeechService speechService;
+    private SpeechStreamService speechStreamService;
 
     private SpeechRecognizer speechRecognizer;
 
@@ -84,7 +105,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
     OkHttpClient client;
 
-    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
 
@@ -112,10 +132,13 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
             requestPermissionForCameraAndMicrophone();
         } else {
             Log.d("Saboor", "Has permissions");
+            initModel();
         }
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
+        LibVosk.setLogLevel(LogLevel.INFO);
 
         String cmdLine = updateUnityCommandLineArguments(getIntent().getStringExtra("unity"));
         getIntent().putExtra("unity", cmdLine);
@@ -152,6 +175,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
+        /*
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
@@ -225,7 +249,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                     );
 
                     Request request2 = new Request.Builder()
-                            .url("https://e6b2f4466d4c.ngrok.app/jini/ask")
+                            .url(" https://6b4de05eb6d8.ngrok.app/jini/ask")
                             .post(requestJsonBody)
                             .build();
 
@@ -270,12 +294,12 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                         takePicture();
 
                     }else if(text.toLowerCase().contains("completed task") || text.toLowerCase().contains("task complete") || text.toLowerCase().contains("I'm finished")){
-                        t1.speak("Ending task", TextToSpeech.QUEUE_FLUSH, null);
+                        readStep("Ending task");
                         mUnityPlayer.UnitySendMessage("CAMMRADPMController", "finishTask", "");
                         takePicture();
 
                     }else if(text.toLowerCase().contains("start task")){
-                        t1.speak("Starting task", TextToSpeech.QUEUE_FLUSH, null);
+                        readStep("Starting task");
                         mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "1");
 
                     }
@@ -290,35 +314,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
 
 
-
-                /*
-                //if(text.toLowerCase().contains("jenny")){
-                    if(text.toLowerCase().contains("next") || text.toLowerCase().contains("done") || text.toLowerCase().contains("dunn")){
-
-                        //t1.speak("Ok. Going to next step", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "next", "");
-                        takePicture();
-
-
-                    }else if(text.toLowerCase().contains("back")){
-                        //t1.speak("Ok. Going to previous step", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "back", "");
-                        takePicture();
-
-                    }else if(text.toLowerCase().contains("completed task") || text.toLowerCase().contains("task complete") || text.toLowerCase().contains("I'm finished")){
-                        t1.speak("Ending task", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "finishTask", "");
-                        takePicture();
-
-                    }else if(text.toLowerCase().contains("start task")){
-                        t1.speak("Starting task", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "1");
-
-                    }
-                //}
-
-                 */
-
             }
 
             @Override
@@ -331,7 +326,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
             }
         });
-
+*/
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -357,6 +352,18 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
     }
 
+    private void initModel() {
+        Log.d("Saboor", "Initializing model");
+
+        StorageService.unpack(this, "model-en-us", "model",
+                (model) -> {
+                    this.model = model;
+                    Log.d("Saboor", "Initialized model");
+                    recognizeMicrophone();
+                },
+                (exception) -> {});
+    }
+
     public void startRationaleQuestions(String empty){
         Log.d("Saboor", "Starting rationale questions");
         this.isDoingRationale=true;
@@ -368,7 +375,8 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
     public void readStep(String text){
         Log.d("Saboor", text);
-        t1.speak(text, TextToSpeech.QUEUE_ADD, null, null);
+        mUnityPlayer.UnitySendMessage("MainController", "speak", text);
+        //t1.speak(text, TextToSpeech.QUEUE_ADD, null, null);
     }
 
     //Start taking pictures continuosly in 4 second intervals
@@ -424,8 +432,8 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
             //close out put stream
             outputStream.close();
 
-            Log.d("Saboor", "Uploading file" + imageFile.getName());
-            Log.d("Saboor", "size of image was after compression" +  imageFile.length());
+            Log.d("Saboor", " Uploading file" + imageFile.getName());
+            Log.d("Saboor", " size of image was after compression" +  imageFile.length());
 
 
             //Upload file to backend python application
@@ -506,6 +514,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
             for (int grantResult : grantResults) {
                 cameraAndMicPermissionGranted &= grantResult == PackageManager.PERMISSION_GRANTED;
+                initModel();
             }
 
             if (cameraAndMicPermissionGranted) {
@@ -539,6 +548,14 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     @Override protected void onDestroy ()
     {
         mUnityPlayer.destroy();
+        if (speechService != null) {
+            speechService.stop();
+            speechService.shutdown();
+        }
+
+        if (speechStreamService != null) {
+            speechStreamService.stop();
+        }
         super.onDestroy();
     }
 
@@ -614,25 +631,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
     public void listenForUserSpeech(){
 
-        Log.d("Saboor", "Listening for user question");
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                speechRecognizer.startListening(speechRecognizerIntent);
-                listening=true;
-            }
-        },100);
-
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                speechRecognizer.stopListening();
-                listening=false;
-            }
-        },isDoingRationale?30000:12000);
 
     }
 
@@ -683,4 +682,50 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     }
     @Override public boolean onTouchEvent(MotionEvent event)          { return mUnityPlayer.onTouchEvent(event); }
     @Override public boolean onGenericMotionEvent(MotionEvent event)  { return mUnityPlayer.onGenericMotionEvent(event); }
+
+    @Override
+    public void onResult(String hypothesis) {
+
+    }
+
+    @Override
+    public void onFinalResult(String hypothesis) {
+        Log.d("Saboor", "Final result was:" + hypothesis);
+    }
+
+    @Override
+    public void onPartialResult(String hypothesis) {
+
+        Log.d("Saboor", "Partial result was:" + hypothesis);
+
+        if(hypothesis.contains("jenny") || hypothesis.contains("ginny") || hypothesis.contains("jimmy")){
+            Log.d("Saboor", "Jini was called!!");
+        }
+
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    @Override
+    public void onTimeout() {
+
+    }
+
+    private void recognizeMicrophone() {
+        if (speechService != null) {
+            speechService.stop();
+            speechService = null;
+        } else {
+            try {
+                Recognizer rec = new Recognizer(model, 16000.0f);
+                speechService = new SpeechService(rec, 16000.0f);
+                speechService.startListening(this);
+            } catch (IOException e) {
+            }
+        }
+    }
+
 }
