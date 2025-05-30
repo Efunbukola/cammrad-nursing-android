@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.unity3d.cammrad_nurse.R;
 import com.unity3d.player.objects.CameraPreview;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.vosk.LibVosk;
 import org.vosk.LogLevel;
 import org.vosk.Model;
@@ -101,6 +102,12 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     private boolean isListeningForQuestion = false, isProcessingUserCommand = false;
     private boolean isDoingRationale = false;
 
+    private String lastReadText = "XXXXXXXXXXX";
+
+    private int VOSK_STATE=0;
+
+    private static final int LISTENING_FOR_WAKEUP_COMMAND = 0,  LISTENING_FOR_GENERAL_COMMAND = 1;
+
     private int audioRound = 0;
 
     OkHttpClient client;
@@ -148,13 +155,13 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         setContentView(R.layout.activity_unity);
 
         //initialize camera with no preview
-        camera = Camera.open();
-        CameraPreview cameraPreview = new CameraPreview(this, camera);
+        //camera = Camera.open();
+        //CameraPreview cameraPreview = new CameraPreview(this, camera);
 
         // preview is required. But you can just cover it up in the layout.
-        FrameLayout previewFL = findViewById(R.id.preview_layout);
-        previewFL.addView(cameraPreview);
-        camera.startPreview();
+        //FrameLayout previewFL = findViewById(R.id.preview_layout);
+        //previewFL.addView(cameraPreview);
+        //camera.startPreview();
 
         FrameLayout frameLayout = findViewById(R.id.root);
         frameLayout.addView(mUnityPlayer);
@@ -361,7 +368,9 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                     Log.d("Saboor", "Initialized model");
                     recognizeMicrophone();
                 },
-                (exception) -> {});
+                (exception) -> {
+                    Log.d("Saboor", "Failed to initialize model because " + exception.getMessage());
+                });
     }
 
     public void startRationaleQuestions(String empty){
@@ -374,13 +383,19 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     }
 
     public void readStep(String text){
+
         Log.d("Saboor", text);
+
+        lastReadText = text;
+
         mUnityPlayer.UnitySendMessage("MainController", "speak", text);
         //t1.speak(text, TextToSpeech.QUEUE_ADD, null, null);
     }
 
     //Start taking pictures continuosly in 4 second intervals
     public void takePicture(){
+
+        if(true) return;
 
         //Take a picture with the camera
 
@@ -639,17 +654,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     @Override public boolean onKeyUp(int keyCode, KeyEvent event)     {
         Log.d("Saboor", "Key was pressed: " + keyCode);
 
-        if(keyCode == 24){
-
-            if(!isProcessingUserCommand) {
-
-                Log.d("Saboor", "Calling method listenForUserQuestion");
-
-                listenForUserSpeech();
-
-            }
-        }
-
         /*
         if(keyCode == 119 && !listening){
             speechRecognizer.startListening(speechRecognizerIntent);
@@ -684,13 +688,152 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     @Override public boolean onGenericMotionEvent(MotionEvent event)  { return mUnityPlayer.onGenericMotionEvent(event); }
 
     @Override
-    public void onResult(String hypothesis) {
+    public void onResult(String text) {
+
+        String hypothesis = filterOutJiniSpeech(text);
+
+        if( text.trim().isEmpty()){
+            return;
+        }
+
+        Log.d("Saboor", "Result was:" + hypothesis);
+
+        Log.d("Saboor", "Final result was:" + hypothesis);
+
+        if(!isDoingRationale && !isListeningForQuestion && containsWakeUpCommand(hypothesis) && hypothesis.toLowerCase().contains("have a question")){
+
+            isListeningForQuestion = true;
+            speechService.setPause(true);
+            mUnityPlayer.UnitySendMessage("MainController", "hideListening", "");
+
+            readStep("Ok. I'm listening");
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    speechService.setPause(false);
+                    mUnityPlayer.UnitySendMessage("MainController", "showListening", "");
+                }
+            },2500);
+
+
+        }else if(isListeningForQuestion){
+
+            mUnityPlayer.UnitySendMessage("MainController", "hideListening", "");
+            speechService.setPause(true);
+
+            readStep("Give me a sec");
+
+            isProcessingUserCommand=true;
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("question",hypothesis);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            RequestBody requestJsonBody = RequestBody.create(
+                    jsonObject.toString(),
+                    MediaType.parse("application/json")
+            );
+
+            Request request2 = new Request.Builder()
+                    .url(" https://6b4de05eb6d8.ngrok.app/jini/ask")
+                    .post(requestJsonBody)
+                    .build();
+
+            client.newCall(request2).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Log.d("Saboor", "Second Request failed");
+                    e.printStackTrace();
+                    isListeningForQuestion=false;
+                    isProcessingUserCommand=false;
+                    speechService.setPause(false);
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                    String rep = response.body().string();
+
+                    readStep(rep.replaceAll("\\R", "").replaceAll("[^A-Za-z0-9]",""));
+
+                    Log.d("Saboor", "Data saved to scribar");
+                    Log.d("Saboor", rep);
+
+                    isListeningForQuestion=false;
+                    isProcessingUserCommand=false;
+                    speechService.setPause(false);
+
+                }
+            });
+
+        }else if(!isDoingRationale && !isListeningForQuestion && !hypothesis.toLowerCase().contains("have a question") && containsWakeUpCommand(hypothesis)){
+            //interprate normal commands
+
+            if(hypothesis.toLowerCase().contains("next") || hypothesis.toLowerCase().contains("done") || hypothesis.toLowerCase().contains("dunn")){
+
+                //t1.speak("Ok. Going to next step", TextToSpeech.QUEUE_FLUSH, null);
+                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "next", "");
+                takePicture();
+
+
+            }else if(hypothesis.toLowerCase().contains("back")){
+                //t1.speak("Ok. Going to previous step", TextToSpeech.QUEUE_FLUSH, null);
+                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "back", "");
+                takePicture();
+
+            }else if(hypothesis.toLowerCase().contains("completed task") || hypothesis.toLowerCase().contains("task complete") || hypothesis.toLowerCase().contains("I'm finished")){
+                readStep("Ending task");
+                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "finishTask", "");
+                takePicture();
+
+            }else if(hypothesis.toLowerCase().contains("start task")){
+                readStep("Starting task");
+                mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "1");
+
+            }
+        }else if(isDoingRationale){
+
+            if(hypothesis.toLowerCase().contains("repeat") && hypothesis.toLowerCase().contains("question")){
+                mUnityPlayer.UnitySendMessage("Rationale Training Controller", "readQuestion", "");
+            }else {
+                mUnityPlayer.UnitySendMessage("Rationale Training Controller", "saveAnswer", hypothesis);
+            }
+        }
+
+
+
+    }
+
+    public boolean containsWakeUpCommand(String hypothesis){
+        return hypothesis.contains("jenny") || hypothesis.contains("ginny") || hypothesis.contains("jimmy") || hypothesis.contains("ginia");
+    }
+
+    public String filterOutJiniSpeech(String text){
+
+        LevenshteinDistance distanceCalculator = new LevenshteinDistance();
+
+        // Compute the distance
+        int distance = distanceCalculator.apply(lastReadText.toLowerCase().replaceAll("[^a-zA-Z0-9]", ""),
+                text.toLowerCase().toLowerCase().replaceAll("[^a-zA-Z0-9]", ""));
+
+        Log.d("Saboor", "Calculating distance between " + lastReadText.toLowerCase().replaceAll("[^a-zA-Z0-9]", "") + " and " + text.toLowerCase().replaceAll("[^a-zA-Z0-9]", "") + ": " + distance );
+
+
+        if(distance < 12){
+            return "";
+        }
+
+        return text;
 
     }
 
     @Override
     public void onFinalResult(String hypothesis) {
-        Log.d("Saboor", "Final result was:" + hypothesis);
+
     }
 
     @Override
@@ -701,6 +844,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         if(hypothesis.contains("jenny") || hypothesis.contains("ginny") || hypothesis.contains("jimmy")){
             Log.d("Saboor", "Jini was called!!");
         }
+
 
     }
 

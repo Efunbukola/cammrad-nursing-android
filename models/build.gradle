@@ -1,25 +1,30 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-
+    namespace "org.vosk.models"
+    compileSdkVersion 34
     defaultConfig {
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 33
     }
-
-    allprojects {
-        repositories {
-            google()
-            jcenter()
-            maven { url "https://jitpack.io" }
-
-            flatDir {
-                dirs 'src/main/libs'
-            }
+    buildFeatures {
+        buildConfig = false
+    }
+    sourceSets {
+        main {
+            assets.srcDirs += "$buildDir/generated/assets"
         }
     }
 }
 
-ant.importBuild 'assets.xml'
-preBuild.dependsOn(list, checksum)
-clean.dependsOn(clean_assets)
+tasks.register('genUUID') {
+    def uuid = UUID.randomUUID().toString()
+    def odir = file("$buildDir/generated/assets/model-en-us")
+    def ofile = file("$odir/uuid")
+    doLast {
+        mkdir odir
+        ofile.text = uuid
+    }
+}
+
+preBuild.dependsOn(genUUID)
