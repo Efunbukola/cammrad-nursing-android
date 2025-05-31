@@ -100,17 +100,14 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     private boolean continueRecording = true;
 
     private boolean isListeningForQuestion = false, isProcessingUserCommand = false;
-    private boolean isDoingRationale = false;
 
-    private String lastReadText = "XXXXXXXXXXX";
-
-    private int VOSK_STATE=0;
-
-    private static final int LISTENING_FOR_WAKEUP_COMMAND = 0,  LISTENING_FOR_GENERAL_COMMAND = 1;
+    private String lastReadText = "1267XXX6622jkHXGGDD(@*&^#&#(@MWHHDHDD";
 
     private int audioRound = 0;
 
     OkHttpClient client;
+
+    JiniInterpreter interpreter;
 
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
@@ -182,181 +179,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
-        /*
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override
-            public void onReadyForSpeech(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onBeginningOfSpeech() {
-                Log.d("Saboor", "Listening");
-            }
-
-            @Override
-            public void onRmsChanged(float v) {
-
-            }
-
-            @Override
-            public void onBufferReceived(byte[] bytes) {
-
-            }
-
-            @Override
-            public void onEndOfSpeech() {
-                listening=false;
-            }
-
-            @Override
-            public void onError(int i) {
-
-            }
-
-            @Override
-            public void onResults(Bundle bundle) {
-                ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-                String text = data.get(0);
-
-                if( text.trim().isEmpty()){
-                    return;
-                }
-
-                if(!isDoingRationale && !isListeningForQuestion && text.toLowerCase().contains("have a question")){
-                    isListeningForQuestion = true;
-                    readStep("Ok. I'm listening");
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            isProcessingUserCommand=false;
-                        }
-                    },2500);
-
-
-                }else if(isListeningForQuestion){
-
-                    readStep("Give me a sec");
-
-                    isProcessingUserCommand=true;
-                    Log.d("Saboor", "Results: " + data.get(0));
-
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put("question",text);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    RequestBody requestJsonBody = RequestBody.create(
-                            jsonObject.toString(),
-                            MediaType.parse("application/json")
-                    );
-
-                    Request request2 = new Request.Builder()
-                            .url(" https://6b4de05eb6d8.ngrok.app/jini/ask")
-                            .post(requestJsonBody)
-                            .build();
-
-                    client.newCall(request2).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            Log.d("Saboor", "Second Request failed");
-                            e.printStackTrace();
-                            isListeningForQuestion=false;
-                            isProcessingUserCommand=false;
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                            String rep = response.body().string();
-
-                            readStep(rep.replaceAll("\\R", "").replaceAll("[^A-Za-z0-9]",""));
-
-                            Log.d("Saboor", "Data saved to scribar");
-                            Log.d("Saboor", rep);
-
-                            isListeningForQuestion=false;
-                            isProcessingUserCommand=false;
-
-                        }
-                    });
-
-                }else if(!isDoingRationale && !isListeningForQuestion && !text.toLowerCase().contains("have a question")){
-                    //interprate normal commands
-
-                    if(text.toLowerCase().contains("next") || text.toLowerCase().contains("done") || text.toLowerCase().contains("dunn")){
-
-                        //t1.speak("Ok. Going to next step", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "next", "");
-                        takePicture();
-
-
-                    }else if(text.toLowerCase().contains("back")){
-                        //t1.speak("Ok. Going to previous step", TextToSpeech.QUEUE_FLUSH, null);
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "back", "");
-                        takePicture();
-
-                    }else if(text.toLowerCase().contains("completed task") || text.toLowerCase().contains("task complete") || text.toLowerCase().contains("I'm finished")){
-                        readStep("Ending task");
-                        mUnityPlayer.UnitySendMessage("CAMMRADPMController", "finishTask", "");
-                        takePicture();
-
-                    }else if(text.toLowerCase().contains("start task")){
-                        readStep("Starting task");
-                        mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "1");
-
-                    }
-                }else if(isDoingRationale){
-
-                    if(text.toLowerCase().contains("repeat") && text.toLowerCase().contains("question")){
-                        mUnityPlayer.UnitySendMessage("Rationale Training Controller", "readQuestion", "");
-                    }else {
-                        mUnityPlayer.UnitySendMessage("Rationale Training Controller", "saveAnswer", text);
-                    }
-                }
-
-
-
-            }
-
-            @Override
-            public void onPartialResults(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onEvent(int i, Bundle bundle) {
-
-            }
-        });
-*/
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.ENGLISH);
-                }
-
-                Set<Voice> voices = t1.getVoices();
-
-                if (voices != null) {
-                    // Process the list of voices
-                    for (Voice voice : voices) {
-                        // Print the voice information
-                        Log.d("TTS", "Voice: " + voice.toString());
-                    }
-                } else {
-                    Log.e("TTS", "Error getting voices: Voices is null");
-                }
-
-            }
-        });
-
-
     }
 
     private void initModel() {
@@ -367,6 +189,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
                     this.model = model;
                     Log.d("Saboor", "Initialized model");
                     recognizeMicrophone();
+                    interpreter = new JiniInterpreter(mUnityPlayer, speechService, client);
                 },
                 (exception) -> {
                     Log.d("Saboor", "Failed to initialize model because " + exception.getMessage());
@@ -375,11 +198,11 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
     public void startRationaleQuestions(String empty){
         Log.d("Saboor", "Starting rationale questions");
-        this.isDoingRationale=true;
+        this.interpreter.setDoingRationale(true);
     }
 
     public void stopRationaleQuestions(){
-        this.isDoingRationale=false;
+        this.interpreter.setDoingRationale(false);
     }
 
     public void readStep(String text){
@@ -392,7 +215,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         //t1.speak(text, TextToSpeech.QUEUE_ADD, null, null);
     }
 
-    //Start taking pictures continuosly in 4 second intervals
+
     public void takePicture(){
 
         if(true) return;
@@ -490,8 +313,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         }
 
     }
-
-
 
     private boolean checkPermissionForCameraAndMicrophone() {
         int resultExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -644,35 +465,10 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return super.dispatchKeyEvent(event);
     }
 
-    public void listenForUserSpeech(){
-
-
-
-    }
 
     // Pass any events not handled by (unfocused) views straight to UnityPlayer
     @Override public boolean onKeyUp(int keyCode, KeyEvent event)     {
         Log.d("Saboor", "Key was pressed: " + keyCode);
-
-        /*
-        if(keyCode == 119 && !listening){
-            speechRecognizer.startListening(speechRecognizerIntent);
-            listening=true;
-
-            long millisecDelay=3000;
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    speechRecognizer.stopListening();
-                    listening=false;
-                }
-            },8000);
-
-            //Stop after 20 seconds
-        }
-         */
-
         return mUnityPlayer.onKeyUp(keyCode, event);
     }
     @Override public boolean onKeyDown(int keyCode, KeyEvent event)   {
@@ -687,148 +483,27 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     @Override public boolean onTouchEvent(MotionEvent event)          { return mUnityPlayer.onTouchEvent(event); }
     @Override public boolean onGenericMotionEvent(MotionEvent event)  { return mUnityPlayer.onGenericMotionEvent(event); }
 
+
+    public void startSpeaking(String dummy){
+        speechService.setPause(true);
+    }
+
+    public void stopSpeaking(String dummy){
+        speechService.setPause(false);
+    }
+
     @Override
-    public void onResult(String text) {
+    public void onResult(String json) {
 
-        String hypothesis = filterOutJiniSpeech(text);
-
-        if( text.trim().isEmpty()){
-            return;
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(json);
+            String text = jsonObject.getString("text");
+            Log.d("Saboor", "Result was:" + text);
+            interpreter.interpret(text);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
-
-        Log.d("Saboor", "Result was:" + hypothesis);
-
-        Log.d("Saboor", "Final result was:" + hypothesis);
-
-        if(!isDoingRationale && !isListeningForQuestion && containsWakeUpCommand(hypothesis) && hypothesis.toLowerCase().contains("have a question")){
-
-            isListeningForQuestion = true;
-            speechService.setPause(true);
-            mUnityPlayer.UnitySendMessage("MainController", "hideListening", "");
-
-            readStep("Ok. I'm listening");
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    speechService.setPause(false);
-                    mUnityPlayer.UnitySendMessage("MainController", "showListening", "");
-                }
-            },2500);
-
-
-        }else if(isListeningForQuestion){
-
-            mUnityPlayer.UnitySendMessage("MainController", "hideListening", "");
-            speechService.setPause(true);
-
-            readStep("Give me a sec");
-
-            isProcessingUserCommand=true;
-
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("question",hypothesis);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-
-            RequestBody requestJsonBody = RequestBody.create(
-                    jsonObject.toString(),
-                    MediaType.parse("application/json")
-            );
-
-            Request request2 = new Request.Builder()
-                    .url(" https://6b4de05eb6d8.ngrok.app/jini/ask")
-                    .post(requestJsonBody)
-                    .build();
-
-            client.newCall(request2).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Log.d("Saboor", "Second Request failed");
-                    e.printStackTrace();
-                    isListeningForQuestion=false;
-                    isProcessingUserCommand=false;
-                    speechService.setPause(false);
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                    String rep = response.body().string();
-
-                    readStep(rep.replaceAll("\\R", "").replaceAll("[^A-Za-z0-9]",""));
-
-                    Log.d("Saboor", "Data saved to scribar");
-                    Log.d("Saboor", rep);
-
-                    isListeningForQuestion=false;
-                    isProcessingUserCommand=false;
-                    speechService.setPause(false);
-
-                }
-            });
-
-        }else if(!isDoingRationale && !isListeningForQuestion && !hypothesis.toLowerCase().contains("have a question") && containsWakeUpCommand(hypothesis)){
-            //interprate normal commands
-
-            if(hypothesis.toLowerCase().contains("next") || hypothesis.toLowerCase().contains("done") || hypothesis.toLowerCase().contains("dunn")){
-
-                //t1.speak("Ok. Going to next step", TextToSpeech.QUEUE_FLUSH, null);
-                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "next", "");
-                takePicture();
-
-
-            }else if(hypothesis.toLowerCase().contains("back")){
-                //t1.speak("Ok. Going to previous step", TextToSpeech.QUEUE_FLUSH, null);
-                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "back", "");
-                takePicture();
-
-            }else if(hypothesis.toLowerCase().contains("completed task") || hypothesis.toLowerCase().contains("task complete") || hypothesis.toLowerCase().contains("I'm finished")){
-                readStep("Ending task");
-                mUnityPlayer.UnitySendMessage("CAMMRADPMController", "finishTask", "");
-                takePicture();
-
-            }else if(hypothesis.toLowerCase().contains("start task")){
-                readStep("Starting task");
-                mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "1");
-
-            }
-        }else if(isDoingRationale){
-
-            if(hypothesis.toLowerCase().contains("repeat") && hypothesis.toLowerCase().contains("question")){
-                mUnityPlayer.UnitySendMessage("Rationale Training Controller", "readQuestion", "");
-            }else {
-                mUnityPlayer.UnitySendMessage("Rationale Training Controller", "saveAnswer", hypothesis);
-            }
-        }
-
-
-
-    }
-
-    public boolean containsWakeUpCommand(String hypothesis){
-        return hypothesis.contains("jenny") || hypothesis.contains("ginny") || hypothesis.contains("jimmy") || hypothesis.contains("ginia");
-    }
-
-    public String filterOutJiniSpeech(String text){
-
-        LevenshteinDistance distanceCalculator = new LevenshteinDistance();
-
-        // Compute the distance
-        int distance = distanceCalculator.apply(lastReadText.toLowerCase().replaceAll("[^a-zA-Z0-9]", ""),
-                text.toLowerCase().toLowerCase().replaceAll("[^a-zA-Z0-9]", ""));
-
-        Log.d("Saboor", "Calculating distance between " + lastReadText.toLowerCase().replaceAll("[^a-zA-Z0-9]", "") + " and " + text.toLowerCase().replaceAll("[^a-zA-Z0-9]", "") + ": " + distance );
-
-
-        if(distance < 12){
-            return "";
-        }
-
-        return text;
-
     }
 
     @Override
@@ -840,11 +515,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     public void onPartialResult(String hypothesis) {
 
         Log.d("Saboor", "Partial result was:" + hypothesis);
-
-        if(hypothesis.contains("jenny") || hypothesis.contains("ginny") || hypothesis.contains("jimmy")){
-            Log.d("Saboor", "Jini was called!!");
-        }
-
 
     }
 
