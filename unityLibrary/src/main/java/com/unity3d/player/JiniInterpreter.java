@@ -168,9 +168,12 @@ public class JiniInterpreter {
 
                     String rep = response.body().string();
 
-                    speak(rep.replaceAll("\\R", "").replaceAll("[^A-Za-z0-9]",""));
+                    speak(rep.replaceAll("[^a-zA-Z0-9\\s]", ""));
 
-                    Log.d("Saboor", rep);
+                    //
+
+                    Log.d("Saboor", "Normal response: " + rep);
+                    Log.d("Saboor", "Altered response: " + rep.replaceAll("[^a-zA-Z0-9\\s]", ""));
 
                     isProcessingUserCommand=false;
 
