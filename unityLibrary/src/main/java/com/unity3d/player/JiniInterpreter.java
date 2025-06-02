@@ -43,6 +43,7 @@ public class JiniInterpreter {
         this.mUnityPlayer = mUnityPlayer;
         this.speechService = speechService;
         this.client = client;
+
     }
 
     //main method for handling user's speech to jini
@@ -60,6 +61,7 @@ public class JiniInterpreter {
         }
 
         if (!isListeningForCommand) {
+
             // Listen for wakeup command
             for (String wakeWord : WAKE_WORDS) {
                 Log.d("Saboor", "Comparing: " + wakeWord + " with: " + input);
@@ -97,7 +99,9 @@ public class JiniInterpreter {
     //process general commands
     private void processCommand(String command) {
 
-        if (command.equals("next") || command.equals("done step") || command.equals("step complete") || command.equals("step completed")) {
+        if (command.equals("start task") || command.equals("begin task")) {
+            handleStartTask();
+        }else if (command.equals("next") || command.equals("done step") || command.equals("step complete") || command.equals("step completed")) {
             handleNext();
         } else if (command.equals("back") || command.equals("go back") || command.equals("previous step")) {
             handleBack();
@@ -112,6 +116,10 @@ public class JiniInterpreter {
     }
 
     // Command Handlers
+
+    private void handleStartTask() {
+        mUnityPlayer.UnitySendMessage("MainController", "setCurrentTask", "0");
+    }
     private void handleNext() {
         mUnityPlayer.UnitySendMessage("CAMMRADPMController", "next", "");
     }
@@ -135,6 +143,9 @@ public class JiniInterpreter {
 
             speak("Give me a sec");
 
+            //mUnityPlayer.UnitySendMessage("CAMMRADMainController", "hideListening", "");
+
+
             question = replaceCommonlyMisheardWords(question);
 
             JSONObject jsonObject = new JSONObject();
@@ -150,7 +161,7 @@ public class JiniInterpreter {
             );
 
             Request request2 = new Request.Builder()
-                    .url("  https://a328-2601-152-1402-51a0-65ff-9a25-ec4f-956f.ngrok-free.app/jini/ask")
+                    .url("https://d59d-2601-152-1402-51a0-7dec-8061-b0dc-b3f6.ngrok-free.app/jini/ask")
                     .post(requestJsonBody)
                     .build();
 
@@ -176,6 +187,8 @@ public class JiniInterpreter {
                     Log.d("Saboor", "Altered response: " + rep.replaceAll("[^a-zA-Z0-9\\s]", ""));
 
                     isProcessingUserCommand=false;
+                    //mUnityPlayer.UnitySendMessage("CAMMRADMainController", "showListening", "");
+
 
                 }
             });

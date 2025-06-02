@@ -514,7 +514,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     @Override
     public void onPartialResult(String hypothesis) {
 
-        //Log.d("Saboor", "Partial result was:" + hypothesis);
+        Log.d("Saboor", "Partial result was:" + hypothesis);
 
     }
 
